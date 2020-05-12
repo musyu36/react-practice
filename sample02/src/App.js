@@ -59,6 +59,7 @@
 
 import React, { Component } from "react";
 import { BrowserRouter, Route, Link } from "react-router-dom";
+import { createStore } from "redux";
 
 const App = () => (
   // ルーティング
@@ -73,10 +74,29 @@ const App = () => (
   </BrowserRouter>
 );
 
+// voteにaction.typeというationが適用されていくことで状態が変わる
+const vote = (state = 0, action) => {
+  switch (action.type) {
+    case "ADD":
+      return state + 1;
+    default:
+      return state;
+  }
+};
+
+// voteでstoreインスタンスを作ってstoreに格納しておく
+let store = createStore(vote);
+
 const Home = () => {
+  //voteにADDアクション
+  store.dispatch({ type: "ADD" });
+  // 値の取り出し
+  let x = store.getState().toString();
+
   return (
     <div>
       <h1>Welcome</h1>
+      <p>投票数: {x}</p>
       <p>
         <Link to="/about">About</Link>
       </p>
@@ -85,9 +105,12 @@ const Home = () => {
 };
 
 const About = () => {
+  store.dispatch({ type: "ADD" });
+  let x = store.getState().toString();
   return (
     <div>
       <h1>About</h1>
+      <p>投票数: {x}</p>
     </div>
   );
 };
